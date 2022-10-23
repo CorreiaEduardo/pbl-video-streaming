@@ -1,0 +1,1 @@
+This project is based on [this implementation](https://github.com/mutaphore/RTSP-Client-Server).
