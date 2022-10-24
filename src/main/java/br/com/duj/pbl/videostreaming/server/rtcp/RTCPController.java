@@ -12,12 +12,10 @@ import static br.com.duj.pbl.videostreaming.Constants.RTCP.RTCP_RCV_PORT;
 
 @Slf4j
 public class RTCPController {
-    private final int interval;
-    private byte[] rtcpBuffer;
-    private DatagramSocket socket;
+    private final byte[] rtcpBuffer;
+    private final DatagramSocket socket;
 
-    public RTCPController(int interval) throws SocketException {
-        this.interval = interval;
+    public RTCPController() throws SocketException {
         this.rtcpBuffer = new byte[Constants.RTCP.BUFFER_SIZE];
         this.socket = new DatagramSocket(RTCP_RCV_PORT);
     }

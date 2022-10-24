@@ -1,7 +1,7 @@
 package br.com.duj.pbl.videostreaming.server.rtp;
 
 import br.com.duj.pbl.videostreaming.Constants;
-import br.com.duj.pbl.videostreaming.server.util.VideoStream;
+import br.com.duj.pbl.videostreaming.server.stream.VideoStream;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -16,8 +16,7 @@ public class RTPController {
     private final byte[] buffer;     //buffer used to store the images to send to the client
     private int rtpPort;
     private InetAddress destinationAddr;
-    private DatagramSocket socket;
-    private DatagramPacket packedFrame;
+    private final DatagramSocket socket;
     private int frameNumber = 0; //image nb of the image currently transmitted
     private VideoStream video;  //VideoStream object used to access video frames
 
@@ -33,8 +32,6 @@ public class RTPController {
     }
 
     public void handlePacket(Consumer<Integer> onSuccess, Runnable onEnd) {
-        byte[] frame;
-
         if (frameNumber < Constants.MEDIA.VIDEO_LENGTH) {
             frameNumber++;
 
@@ -49,7 +46,7 @@ public class RTPController {
                 byte[] packetBits = new byte[packetLength];
                 packet.getPacket(packetBits);
 
-                packedFrame = new DatagramPacket(packetBits, packetLength, destinationAddr, rtpPort);
+                DatagramPacket packedFrame = new DatagramPacket(packetBits, packetLength, destinationAddr, rtpPort);
                 socket.send(packedFrame);
 
                 log.info("[RTP] Sent frame #{}, with size = {} ({})", frameNumber, imageLength, buffer.length);

@@ -26,35 +26,6 @@ public class RtcpPacket {
     private byte[] header;            //Bitstream of header
     private byte[] body;            //Bitstream of the body
 
-    public RtcpPacket(float fractionLost, int totalLoss, int highSeqNb) {
-        this.fractionLost = fractionLost;
-        this.totalLoss = totalLoss;
-        this.highSeqNb = highSeqNb;
-
-        version = Constants.RTCP.VERSION;
-        padding = Constants.RTCP.PADDING;
-        receptionReport = Constants.RTCP.RC;
-        payloadType = Constants.RTCP.PAYLOAD_TYPE;
-        length = Constants.RTCP.LENGTH;
-
-        header = new byte[HEADER_SIZE];
-        body = new byte[BODY_SIZE];
-
-        header[0] = (byte) (version << 6 | padding << 5 | receptionReport);
-        header[1] = (byte) (payloadType & 0xFF);
-        header[2] = (byte) (length >> 8);
-        header[3] = (byte) (length & 0xFF);
-        header[4] = (byte) (ssrc >> 24);
-        header[5] = (byte) (ssrc >> 16);
-        header[6] = (byte) (ssrc >> 8);
-        header[7] = (byte) (ssrc & 0xFF);
-
-        ByteBuffer byteBuffer = ByteBuffer.wrap(body);
-        byteBuffer.putFloat(fractionLost);
-        byteBuffer.putInt(totalLoss);
-        byteBuffer.putInt(highSeqNb);
-    }
-
     public RtcpPacket(byte[] content) {
         header = new byte[HEADER_SIZE];
         body = new byte[BODY_SIZE];
@@ -71,17 +42,6 @@ public class RtcpPacket {
         fractionLost = bb.getFloat();
         totalLoss = bb.getInt();
         highSeqNb = bb.getInt();
-    }
-
-    public int getPacket(byte[] packet) {
-        System.arraycopy(header, 0, packet, 0, HEADER_SIZE);
-        System.arraycopy(body, 0, packet, HEADER_SIZE, BODY_SIZE);
-
-        return (BODY_SIZE + HEADER_SIZE);
-    }
-
-    public int getPacketLength() {
-        return (BODY_SIZE + HEADER_SIZE);
     }
 
     public String toString() {

@@ -27,7 +27,7 @@ public class RTSPController {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
-    private Map<String, Integer> controls = Map.of(
+    private final Map<String, Integer> controls = Map.of(
             "SETUP", SETUP,
             "PLAY", PLAY,
             "PAUSE", PAUSE,

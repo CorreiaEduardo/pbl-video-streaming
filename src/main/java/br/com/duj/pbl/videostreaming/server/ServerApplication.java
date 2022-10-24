@@ -5,7 +5,6 @@ import br.com.duj.pbl.videostreaming.server.rtcp.RTCPController;
 import br.com.duj.pbl.videostreaming.server.rtp.RTPController;
 import br.com.duj.pbl.videostreaming.server.rtsp.RTSPConnectionData;
 import br.com.duj.pbl.videostreaming.server.rtsp.RTSPController;
-import br.com.duj.pbl.videostreaming.server.util.ImageTranslator;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -33,8 +32,6 @@ public class ServerApplication extends JFrame implements ActionListener {
     private RTCPController rtcpController;
     private RTSPController rtspController;
 
-    private ImageTranslator imgTranslator;
-
     private JLabel jLabel;
 
     public ServerApplication() throws IOException {
@@ -43,8 +40,7 @@ public class ServerApplication extends JFrame implements ActionListener {
         transmissionDelay = Constants.MEDIA.FRAME_PERIOD;
         rtspController = new RTSPController();
         rtpController = new RTPController();
-        rtcpController = new RTCPController(RTCP_INTERVAL);
-        imgTranslator = new ImageTranslator(0.8f, "jpeg");
+        rtcpController = new RTCPController();
 
         rtpTimer = new Timer(transmissionDelay, this);
         rtpTimer.setActionCommand(RTP_TIMER_COMMAND);

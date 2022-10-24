@@ -1,4 +1,4 @@
-package br.com.duj.pbl.videostreaming.server.util;
+package br.com.duj.pbl.videostreaming.server.stream;
 
 import lombok.Getter;
 
