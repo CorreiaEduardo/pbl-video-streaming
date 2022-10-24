@@ -102,6 +102,7 @@ target/**
 
 # Package Files #
 *.jar
+!Client.jar
 *.war
 *.nar
 *.ear
