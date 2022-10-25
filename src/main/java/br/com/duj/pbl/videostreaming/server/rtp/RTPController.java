@@ -31,7 +31,7 @@ public class RTPController {
         this.destinationAddr = destinationAddr;
     }
 
-    public void handlePacket(Consumer<Integer> onSuccess, Runnable onEnd) {
+    public void sendPacket(Consumer<Integer> onSuccess, Runnable onEnd) {
         if (frameNumber < Constants.MEDIA.VIDEO_LENGTH) {
             frameNumber++;
 

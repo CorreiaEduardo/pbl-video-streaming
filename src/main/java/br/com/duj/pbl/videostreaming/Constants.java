@@ -21,21 +21,6 @@ public interface Constants {
         int DESCRIBE = 7;
     }
 
-    interface RTCP {
-        int RTCP_RCV_PORT = 19001; // Port where the client will receive the RTP packets
-        int RTCP_PERIOD = 400;     // How often to check for control events
-        int BUFFER_SIZE = 512;
-
-        int HEADER_SIZE = 8;
-        int BODY_SIZE = 24;
-
-        int VERSION = 2;
-        int PADDING = 0;
-        int RC = 1;
-        int PAYLOAD_TYPE = 201;
-        int LENGTH = 32;
-    }
-
     interface RTP {
         int HEADER_SIZE = 12;
 

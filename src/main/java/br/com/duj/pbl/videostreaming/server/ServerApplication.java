@@ -1,7 +1,6 @@
 package br.com.duj.pbl.videostreaming.server;
 
 import br.com.duj.pbl.videostreaming.Constants;
-import br.com.duj.pbl.videostreaming.server.rtcp.RTCPController;
 import br.com.duj.pbl.videostreaming.server.rtp.RTPController;
 import br.com.duj.pbl.videostreaming.server.rtsp.RTSPConnectionData;
 import br.com.duj.pbl.videostreaming.server.rtsp.RTSPController;
@@ -20,16 +19,11 @@ import static br.com.duj.pbl.videostreaming.Constants.RTSP.*;
 @Slf4j
 public class ServerApplication extends JFrame implements ActionListener {
     private final String RTP_TIMER_COMMAND = "RTP_TIMER_COMMAND";
-    private final String RTCP_TIMER_COMMAND = "RTCP_TIMER_COMMAND";
-
-    private final int RTCP_INTERVAL = Constants.RTCP.RTCP_PERIOD;
 
     private Timer rtpTimer;
-    private Timer rtcpTimer;
     private int transmissionDelay;
 
     private RTPController rtpController;
-    private RTCPController rtcpController;
     private RTSPController rtspController;
 
     private JLabel jLabel;
@@ -40,16 +34,11 @@ public class ServerApplication extends JFrame implements ActionListener {
         transmissionDelay = Constants.MEDIA.FRAME_PERIOD;
         rtspController = new RTSPController();
         rtpController = new RTPController();
-        rtcpController = new RTCPController();
 
         rtpTimer = new Timer(transmissionDelay, this);
         rtpTimer.setActionCommand(RTP_TIMER_COMMAND);
         rtpTimer.setInitialDelay(0);
         rtpTimer.setCoalesce(true);
-
-        rtcpTimer = new Timer(RTCP_INTERVAL, this);
-        rtcpTimer.setInitialDelay(0);
-        rtcpTimer.setCoalesce(true);
 
         configureGUI();
     }
@@ -74,15 +63,12 @@ public class ServerApplication extends JFrame implements ActionListener {
                         switch (command) {
                             case PLAY:
                                 server.rtpTimer.start();
-                                server.rtcpTimer.start();
                                 break;
                             case PAUSE:
                                 server.rtpTimer.stop();
-                                server.rtcpTimer.stop();
                                 break;
                             case TEARDOWN:
                                 server.rtpTimer.stop();
-                                server.rtcpTimer.stop();
                                 server.rtspController.closeConnection();
                                 server.rtpController.closeConnection();
                                 System.exit(0);
@@ -102,7 +88,6 @@ public class ServerApplication extends JFrame implements ActionListener {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 rtpTimer.stop();
-                rtcpTimer.stop();
                 System.exit(0);
             }
         });
@@ -112,22 +97,15 @@ public class ServerApplication extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        try {
-            final String actionCommand = e.getActionCommand();
+        final String actionCommand = e.getActionCommand();
 
-            if (RTP_TIMER_COMMAND.equals(actionCommand)) {
-                rtpController.handlePacket(
-                        frameNumber -> jLabel.setText("Send frame #" + frameNumber),
-                        () -> {
-                            rtpTimer.stop();
-                            rtcpTimer.stop();
-                        });
-            } else if (RTCP_TIMER_COMMAND.equals(actionCommand)) {
-                rtcpController.handlePacket();
-            }
-
-        } catch (IOException ex) {
-            log.error("Exception caught", ex);
+        if (RTP_TIMER_COMMAND.equals(actionCommand)) {
+            rtpController.sendPacket(
+                    frameNumber -> jLabel.setText("Send frame #" + frameNumber),
+                    () -> {
+                        rtpTimer.stop();
+                    });
         }
+
     }
 }
